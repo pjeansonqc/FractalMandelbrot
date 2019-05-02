@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FractalMandelBrot", "FractalMandelBrot\FractalMandelBrot.vcxproj", "{AFE50FEE-5019-428B-9DA1-7F6867C42758}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AFE50FEE-5019-428B-9DA1-7F6867C42758}.Debug|x64.ActiveCfg = Debug|x64
+		{AFE50FEE-5019-428B-9DA1-7F6867C42758}.Debug|x64.Build.0 = Debug|x64
+		{AFE50FEE-5019-428B-9DA1-7F6867C42758}.Debug|x86.ActiveCfg = Debug|Win32
+		{AFE50FEE-5019-428B-9DA1-7F6867C42758}.Debug|x86.Build.0 = Debug|Win32
+		{AFE50FEE-5019-428B-9DA1-7F6867C42758}.Release|x64.ActiveCfg = Release|x64
+		{AFE50FEE-5019-428B-9DA1-7F6867C42758}.Release|x64.Build.0 = Release|x64
+		{AFE50FEE-5019-428B-9DA1-7F6867C42758}.Release|x86.ActiveCfg = Release|Win32
+		{AFE50FEE-5019-428B-9DA1-7F6867C42758}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DA4DF546-1066-4544-95CA-1C8B937CC0F8}
+	EndGlobalSection
+EndGlobal
