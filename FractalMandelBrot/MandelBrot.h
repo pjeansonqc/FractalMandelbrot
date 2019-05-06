@@ -7,8 +7,6 @@ namespace FractalMandelbrot
    private:
       int mMaxIteration{100};
    public:
-      static const int MAX_ITERATIONS = 100;
-   public:
       MandelBrot(int inMaxIteration);
       virtual ~MandelBrot();
 
