@@ -71,7 +71,7 @@ namespace FractalMandelbrot
                hue = 0;
             }
             uint8_t lRed = 0;
-            uint8_t lGreen = 255*hue;
+            uint8_t lGreen = (uint8_t)(255*hue);
             uint8_t lBlue = 0;
             mBitMap.setPixel(x, y, lRed, lGreen, lBlue);
          }

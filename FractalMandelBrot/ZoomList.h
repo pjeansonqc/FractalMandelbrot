@@ -16,19 +16,8 @@ namespace FractalMandelbrot
       ~ZoomList();
       void Add(const Zoom & inZoom);
       //***************************************************************************
-      std::pair <double, double> doZoom(int x, int y)
-      {
-         std::pair <double, double> lCoordinates(0.0, 0.0);
-         //for (auto lZoom : mZoomList)
-         {
-            //lCoordinates.first = (2.0 / mWidth * (x+lZoom.x) * lZoom.scale) - 1.0 * lZoom.scale;
-            //lCoordinates.second = (2.0 / mHeight * (y+lZoom.y) * lZoom.scale) - 1.0 * lZoom.scale;
-
-            lCoordinates.first = (x - mWidth / 2)*mScale + mXCenter;
-            lCoordinates.second = (y - mHeight / 2)*mScale + mYCenter;
-         }
-         return lCoordinates;
-      }
+      std::pair <double, double> doZoom(int x, int y);
+         
    private:
       double mXCenter{ 0.0 };
       double mYCenter{ 0.0 };
