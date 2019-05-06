@@ -7,13 +7,12 @@ namespace FractalMandelbrot
       mWidth(inWidth), 
       mHeight(inHeight),
       mMaxiterations(inMaxiterations),
-      lHistogram(inMaxiterations),
-      lIterationsVector(mWidth * mHeight, 0),
-      lZoomList(mWidth, mHeight),
-      lbm(inWidth, inHeight)
+      mHistogram(inMaxiterations),
+      mIterationsVector(mWidth * mHeight, 0),
+      mZoomList(mWidth, mHeight),
+      mBitMap(inWidth, inHeight)
    {
-      lHistogram.resize(mMaxiterations, 0);
-      //lIterationsVector.resize(mWidth * mHeight, 0);
+      mHistogram.resize(mMaxiterations, 0);
    }
 
 
@@ -31,12 +30,12 @@ namespace FractalMandelbrot
 #pragma omp parallel for
          for (int y = 0; y < mHeight; ++y)
          {
-            auto location = lZoomList.doZoom(x, y);
+            auto location = mZoomList.doZoom(x, y);
             int lIterations = MandelBrot::getIteration(location.first, location.second, mMaxiterations);
-            lIterationsVector[y*mWidth + x] = lIterations;
-            if (lIterations != MandelBrot::MAX_ITERATIONS)
+            mIterationsVector[y*mWidth + x] = lIterations;
+            if (lIterations < mMaxiterations)
             {
-               lHistogram[lIterations]++;
+               mHistogram[lIterations]++;
             }
          }
       }
@@ -47,7 +46,7 @@ namespace FractalMandelbrot
 #pragma omp parallel for
       for (int i = 0; i < mMaxiterations; i++)
       {
-         lTotal += lHistogram[i];
+         lTotal += mHistogram[i];
       }
 
       for (int x = 0; x < mWidth; ++x)
@@ -55,7 +54,7 @@ namespace FractalMandelbrot
 #pragma omp parallel for
          for (int y = 0; y < mHeight; ++y)
          {
-            int iterations = lIterationsVector[y*mWidth + x];
+            int iterations = mIterationsVector[y*mWidth + x];
             double hue = 0.0;
 
 
@@ -64,7 +63,7 @@ namespace FractalMandelbrot
 #pragma omp parallel for
                for (int i = 0; i < iterations; i++)
                {
-                  hue += ((double)lHistogram[i]) / lTotal;
+                  hue += ((double)mHistogram[i]) / lTotal;
                }
             }
             else
@@ -74,20 +73,20 @@ namespace FractalMandelbrot
             uint8_t lRed = 0;
             uint8_t lGreen = 255*hue;
             uint8_t lBlue = 0;
-            lbm.setPixel(x, y, lRed, lGreen, lBlue);
+            mBitMap.setPixel(x, y, lRed, lGreen, lBlue);
          }
       }
    }
    void FractalCreator::addZoom()
    {
-      lZoomList.Add(Zoom(mWidth / 2, mHeight / 2, 4.0 / mWidth));
-      lZoomList.Add(Zoom(295, mHeight - 202, 0.1));
-      lZoomList.Add(Zoom(288, mHeight - 304, 0.01));
+      mZoomList.Add(Zoom(mWidth / 2, mHeight / 2, 4.0 / mWidth));
+      mZoomList.Add(Zoom(295, mHeight - 202, 0.1));
+      mZoomList.Add(Zoom(288, mHeight - 304, 0.01));
    }
    void FractalCreator::writeBitmap(std::string name)
    {
    
-      lbm.write(name);
+      mBitMap.write(name);
    }
 
 

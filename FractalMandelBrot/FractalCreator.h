@@ -17,11 +17,11 @@ namespace FractalMandelbrot
    private:
       int mWidth{ 800 };
       int mHeight{ 600 };
-      BitMap lbm{mWidth, mHeight};
+      BitMap mBitMap{mWidth, mHeight};
       int mMaxiterations{100};
-      vector<int> lHistogram{ 100, 0 };
-      vector<int> lIterationsVector{ mWidth * mHeight, 0 };
-      ZoomList lZoomList{ mWidth, mHeight };
+      vector<int> mHistogram{ 100, 0 };
+      vector<int> mIterationsVector{ mWidth * mHeight, 0 };
+      ZoomList mZoomList{ mWidth, mHeight };
 
    public:
       FractalCreator(int inWidth, int inHeight, int inMaxiterations);
