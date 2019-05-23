@@ -3,6 +3,13 @@
 
 namespace FractalMandelbrot
 {
+   void FractalCreator::run(std::string name)
+   {
+      calculateIteration();
+      calculateRangeTotals();
+      drawFractal();
+      writeBitmap(name);
+   }
    FractalCreator::FractalCreator(int inWidth, int inHeight, int inMaxiterations) :
       mWidth(inWidth), 
       mHeight(inHeight),
@@ -10,9 +17,11 @@ namespace FractalMandelbrot
       mHistogram(inMaxiterations),
       mIterationsVector(mWidth * mHeight, 0),
       mZoomList(mWidth, mHeight),
-      mBitMap(inWidth, inHeight)
+      mBitMap(inWidth, inHeight),
+      mColorRangeList(inMaxiterations)
    {
       mHistogram.resize(mMaxiterations, 0);
+      mZoomList.Add(Zoom(mWidth / 2, mHeight / 2, 4.0 / mWidth));
    }
 
 
@@ -43,7 +52,7 @@ namespace FractalMandelbrot
    void FractalCreator::drawFractal() 
    {
       int lTotal = 0;
-#pragma omp parallel for
+//#pragma omp parallel for
       for (int i = 0; i < mMaxiterations; i++)
       {
          lTotal += mHistogram[i];
@@ -51,7 +60,7 @@ namespace FractalMandelbrot
 
       for (int x = 0; x < mWidth; ++x)
       {
-#pragma omp parallel for
+//#pragma omp parallel for
          for (int y = 0; y < mHeight; ++y)
          {
             int iterations = mIterationsVector[y*mWidth + x];
@@ -60,7 +69,7 @@ namespace FractalMandelbrot
 
             if (iterations < mMaxiterations)
             {
-#pragma omp parallel for
+//#pragma omp parallel for
                for (int i = 0; i < iterations; i++)
                {
                   hue += ((double)mHistogram[i]) / lTotal;
@@ -70,23 +79,48 @@ namespace FractalMandelbrot
             {
                hue = 0;
             }
-            uint8_t lRed = 0;
-            uint8_t lGreen = (uint8_t)(255*hue);
-            uint8_t lBlue = 0;
+            RGB lColor =  mColorRangeList.GetColor(iterations);
+            uint8_t lRed = (uint8_t)(lColor.r * hue);
+            uint8_t lGreen = (uint8_t)(lColor.g * hue);
+            uint8_t lBlue = (uint8_t)(lColor.b * hue);
             mBitMap.setPixel(x, y, lRed, lGreen, lBlue);
          }
       }
    }
-   void FractalCreator::addZoom()
+   void FractalCreator::addZoom(const Zoom & inZoom)
    {
-      mZoomList.Add(Zoom(mWidth / 2, mHeight / 2, 4.0 / mWidth));
-      mZoomList.Add(Zoom(295, mHeight - 202, 0.1));
-      mZoomList.Add(Zoom(288, mHeight - 304, 0.01));
+      mZoomList.Add(inZoom);
    }
+
+   void FractalCreator::addColorRange(double rangeBegin,  double rangeEnd, const RGB & rgb)
+   {
+      mColorRangeList.AddColorRange(rangeBegin, rangeEnd, rgb);
+   }
+
    void FractalCreator::writeBitmap(std::string name)
    {
    
       mBitMap.write(name);
+   }
+
+   void FractalCreator::calculateRangeTotals()
+   {
+      /*int rangeIndex = 0;
+      for(int i=0; i<mMaxiterations;++i)
+      { 
+         int lIndex = mColorRangeList.GetRangeIndex(i);
+         if (lIndex != -1)
+         {
+            mRangeTotal[rangeIndex] += pixels;
+         }
+         if(i>= mColorRanges[rangeIndex+1])
+         { 
+            ++rangeIndex;
+         }
+         int pixels = mHistogram[i];
+         mRangeTotal[rangeIndex] += pixels;
+      }*/
+     
    }
 
 

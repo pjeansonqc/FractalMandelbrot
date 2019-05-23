@@ -7,8 +7,9 @@
 #include <ppl.h>
 #include "MandelBrot.h"
 #include "ZoomList.h"
+#include "ColorRangeList.h"
 #include <string>
-
+#include "RGB.h"
 
 namespace FractalMandelbrot
 {
@@ -19,18 +20,25 @@ namespace FractalMandelbrot
       int mHeight{ 600 };
       BitMap mBitMap{mWidth, mHeight};
       int mMaxiterations{100};
+      ColorRangeList mColorRangeList;
       vector<int> mHistogram{ 100, 0 };
       vector<int> mIterationsVector{ mWidth * mHeight, 0 };
       ZoomList mZoomList{ mWidth, mHeight };
+      int mRangeTotal;
+      bool mGotFirstRange{false};
 
    public:
       FractalCreator(int inWidth, int inHeight, int inMaxiterations);
       virtual ~FractalCreator();
+      void run(std::string name);
+      void addZoom(const Zoom & inZoom);
+      void addColorRange(double rangeBegin, double rangeEnd, const RGB & rgb);
 
+   private:
       void calculateIteration();
       void drawFractal();
-      void addZoom();
       void writeBitmap(std::string name);
+      void calculateRangeTotals();
    };
 }
 

@@ -159,6 +159,8 @@
     <ClInclude Include="BitMap.h" />
     <ClInclude Include="BitmapFileHeader.h" />
     <ClInclude Include="BitmapInfoHeader.h" />
+    <ClInclude Include="ColorRange.h" />
+    <ClInclude Include="ColorRangeList.h" />
     <ClInclude Include="FractalCreator.h" />
     <ClInclude Include="MandelBrot.h" />
     <ClInclude Include="pch.h" />
@@ -168,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitMap.cpp" />
+    <ClCompile Include="ColorRangeList.cpp" />
     <ClCompile Include="FractalCreator.cpp" />
     <ClCompile Include="FractalMandelBrot.cpp" />
     <ClCompile Include="MandelBrot.cpp" />
@@ -182,6 +185,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="test.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
