@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace SharpMandelbrot
 {
-    class FractalCreator
+    public class FractalCreator : EventArgs
     {
         int mWidth = 800;
         int mHeight = 600;
@@ -21,10 +21,29 @@ namespace SharpMandelbrot
         ZoomList mZoomList;// { mWidth, mHeight };
         int mRangeTotal;
 
+        public Bitmap MBitmap { get => mBitmap; set => mBitmap = value; }
+        public event EventHandler<ProgressEventArgs> RaiseProgressEvent;
+        public delegate void ProgressEventHandler(object sender, ProgressEventArgs a);
+        // Wrap event invocations inside a protected virtual method
+        // to allow derived classes to override the event invocation behavior
+        protected async virtual void OnRaiseProgressEvent(ProgressEventArgs e)
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            EventHandler<ProgressEventArgs> handler = RaiseProgressEvent;
 
+            // Event will be null if there are no subscribers
+            if (handler != null)
+            {
+                // Use the () operator to raise the event.
+                handler(this, e);
+            }
+        }
         //Public
         public FractalCreator(int inWidth, int inHeight, int inMaxiterations)
         {
+            OnRaiseProgressEvent(new ProgressEventArgs(0));
             mWidth = inWidth;
             mHeight = inHeight;
             mMaxiterations = inMaxiterations;
@@ -37,15 +56,28 @@ namespace SharpMandelbrot
             mRangeTotal = 0;
             mZoomList.Add(new Zoom(mWidth / 2, mHeight / 2, 4.0 / mWidth));
         }
-
-        public void run(string name)
+        private IProgress<int> mProgress;
+        public async Task<string> run(string name, IProgress<int> progress)
         {
+            mProgress = progress;
+            mProgress.Report(10);
+            //OnRaiseProgressEvent(new ProgressEventArgs(10));
             calculateIteration();
+            mProgress.Report(20);
+            //OnRaiseProgressEvent(new ProgressEventArgs(20));
             //calculateRangeTotals();
             drawFractal();
+            mProgress.Report(80);
+            //OnRaiseProgressEvent(new ProgressEventArgs(50));
+            MBitmap = mBitmap;
+            mProgress.Report(100);
+            //OnRaiseProgressEvent(new ProgressEventArgs(75));
             writeBitmap(name);
+            
+            //OnRaiseProgressEvent(new ProgressEventArgs(100));
+            return ("Finished!");
         }
-        void calculateIteration()
+       void  calculateIteration()
         {
             //#pragma omp parallel for
             for (int x = 0; x < mWidth; ++x)
@@ -63,7 +95,7 @@ namespace SharpMandelbrot
                 }
             }
         }
-        void drawFractal()
+        async void drawFractal()
         {
             int lTotal = 0;
             //#pragma omp parallel for
@@ -71,9 +103,11 @@ namespace SharpMandelbrot
             {
                 lTotal += mHistogram[i];
             }
-
+            mProgress.Report(25);
             for (int x = 0; x < mWidth; ++x)
             {
+                int p = (int)(25 + 75 * (1.0f * x / mWidth));
+                mProgress.Report(p );
                 //#pragma omp parallel for
                 for (int y = 0; y < mHeight; ++y)
                 {

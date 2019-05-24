@@ -58,6 +58,7 @@
     <Compile Include="MandelBrot.cs" />
     <Compile Include="Pixel.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ProgressEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Zoom.cs" />
     <Compile Include="ZoomList.cs" />
