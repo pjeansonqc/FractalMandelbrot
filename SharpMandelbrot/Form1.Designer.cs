@@ -32,12 +32,20 @@ namespace SharpMandelbrot
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.numericUpDownIterations = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.FractalSize = new System.Windows.Forms.GroupBox();
+            this.HeightLabel = new System.Windows.Forms.Label();
+            this.HeightNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.WidthLabel = new System.Windows.Forms.Label();
+            this.WidthNumericUpDown = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownIterations)).BeginInit();
+            this.FractalSize.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.HeightNumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.WidthNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // Generate
@@ -52,12 +60,13 @@ namespace SharpMandelbrot
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(12, 45);
+            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox1.Location = new System.Drawing.Point(12, 78);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(676, 537);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox1.Size = new System.Drawing.Size(800, 600);
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.SizeChanged += new System.EventHandler(this.OnSizeChanged);
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ShowPosition);
             // 
             // statusStrip1
@@ -76,6 +85,11 @@ namespace SharpMandelbrot
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
             // 
             // numericUpDownIterations
             // 
@@ -115,10 +129,93 @@ namespace SharpMandelbrot
             this.label1.TabIndex = 8;
             this.label1.Text = "Nb Iterations";
             // 
-            // toolStripProgressBar1
+            // FractalSize
             // 
-            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
+            this.FractalSize.Controls.Add(this.HeightLabel);
+            this.FractalSize.Controls.Add(this.HeightNumericUpDown);
+            this.FractalSize.Controls.Add(this.WidthLabel);
+            this.FractalSize.Controls.Add(this.WidthNumericUpDown);
+            this.FractalSize.Location = new System.Drawing.Point(369, 18);
+            this.FractalSize.Name = "FractalSize";
+            this.FractalSize.Size = new System.Drawing.Size(306, 54);
+            this.FractalSize.TabIndex = 9;
+            this.FractalSize.TabStop = false;
+            this.FractalSize.Text = "Fractal Size";
+            // 
+            // HeightLabel
+            // 
+            this.HeightLabel.AutoSize = true;
+            this.HeightLabel.Location = new System.Drawing.Point(161, 28);
+            this.HeightLabel.Name = "HeightLabel";
+            this.HeightLabel.Size = new System.Drawing.Size(38, 13);
+            this.HeightLabel.TabIndex = 15;
+            this.HeightLabel.Text = "Height";
+            // 
+            // HeightNumericUpDown
+            // 
+            this.HeightNumericUpDown.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.HeightNumericUpDown.Location = new System.Drawing.Point(202, 26);
+            this.HeightNumericUpDown.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.HeightNumericUpDown.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.HeightNumericUpDown.Name = "HeightNumericUpDown";
+            this.HeightNumericUpDown.Size = new System.Drawing.Size(64, 20);
+            this.HeightNumericUpDown.TabIndex = 14;
+            this.HeightNumericUpDown.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.HeightNumericUpDown.ValueChanged += new System.EventHandler(this.HeigthValueChanged);
+            // 
+            // WidthLabel
+            // 
+            this.WidthLabel.AutoSize = true;
+            this.WidthLabel.Location = new System.Drawing.Point(35, 28);
+            this.WidthLabel.Name = "WidthLabel";
+            this.WidthLabel.Size = new System.Drawing.Size(35, 13);
+            this.WidthLabel.TabIndex = 13;
+            this.WidthLabel.Text = "Width";
+            this.WidthLabel.Click += new System.EventHandler(this.WidthValueChanged);
+            // 
+            // WidthNumericUpDown
+            // 
+            this.WidthNumericUpDown.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.WidthNumericUpDown.Location = new System.Drawing.Point(76, 26);
+            this.WidthNumericUpDown.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.WidthNumericUpDown.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.WidthNumericUpDown.Name = "WidthNumericUpDown";
+            this.WidthNumericUpDown.Size = new System.Drawing.Size(64, 20);
+            this.WidthNumericUpDown.TabIndex = 12;
+            this.WidthNumericUpDown.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.WidthNumericUpDown.ValueChanged += new System.EventHandler(this.WidthValueChanged);
             // 
             // Form1
             // 
@@ -126,6 +223,7 @@ namespace SharpMandelbrot
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(848, 632);
+            this.Controls.Add(this.FractalSize);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.numericUpDownIterations);
             this.Controls.Add(this.statusStrip1);
@@ -138,6 +236,10 @@ namespace SharpMandelbrot
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownIterations)).EndInit();
+            this.FractalSize.ResumeLayout(false);
+            this.FractalSize.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.HeightNumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.WidthNumericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -151,6 +253,11 @@ namespace SharpMandelbrot
         private System.Windows.Forms.NumericUpDown numericUpDownIterations;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
+        private System.Windows.Forms.GroupBox FractalSize;
+        private System.Windows.Forms.Label WidthLabel;
+        private System.Windows.Forms.NumericUpDown WidthNumericUpDown;
+        private System.Windows.Forms.Label HeightLabel;
+        private System.Windows.Forms.NumericUpDown HeightNumericUpDown;
     }
 }
 

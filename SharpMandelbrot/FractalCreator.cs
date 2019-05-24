@@ -26,7 +26,7 @@ namespace SharpMandelbrot
         public delegate void ProgressEventHandler(object sender, ProgressEventArgs a);
         // Wrap event invocations inside a protected virtual method
         // to allow derived classes to override the event invocation behavior
-        protected async virtual void OnRaiseProgressEvent(ProgressEventArgs e)
+        protected virtual void OnRaiseProgressEvent(ProgressEventArgs e)
         {
             // Make a temporary copy of the event to avoid possibility of
             // a race condition if the last subscriber unsubscribes
@@ -57,33 +57,34 @@ namespace SharpMandelbrot
             mZoomList.Add(new Zoom(mWidth / 2, mHeight / 2, 4.0 / mWidth));
         }
         private IProgress<int> mProgress;
-        public async Task<string> run(string name, IProgress<int> progress)
+        public void run(string name, IProgress<int> progress)
         {
             mProgress = progress;
+            //mProgress = progress;
             mProgress.Report(10);
             //OnRaiseProgressEvent(new ProgressEventArgs(10));
             calculateIteration();
-            mProgress.Report(20);
+            //mProgress.Report(20);
             //OnRaiseProgressEvent(new ProgressEventArgs(20));
             //calculateRangeTotals();
             drawFractal();
-            mProgress.Report(80);
+            //mProgress.Report(80);
             //OnRaiseProgressEvent(new ProgressEventArgs(50));
             MBitmap = mBitmap;
-            mProgress.Report(100);
+            //mProgress.Report(100);
             //OnRaiseProgressEvent(new ProgressEventArgs(75));
-            writeBitmap(name);
-            
+            //writeBitmap(name);
+
             //OnRaiseProgressEvent(new ProgressEventArgs(100));
-            return ("Finished!");
+            //return true;
         }
-       void  calculateIteration()
+        bool calculateIteration()
         {
             //#pragma omp parallel for
-            for (int x = 0; x < mWidth; ++x)
+            Parallel.For(0, mWidth, x =>
             {
                 //#pragma omp parallel for
-                for (int y = 0; y < mHeight; ++y)
+                Parallel.For(0, mHeight, y =>
                 {
                     Tuple<double, double> location = mZoomList.DoZoom(x, y);
                     int lIterations = SharpMandelbrot.MandelBrot.getIteration(location.Item1, location.Item2, mMaxiterations);
@@ -92,49 +93,52 @@ namespace SharpMandelbrot
                     {
                         mHistogram[lIterations]++;
                     }
-                }
-            }
+                } );
+            } );
+            return true;
         }
-        async void drawFractal()
+        void drawFractal()
         {
             int lTotal = 0;
-            //#pragma omp parallel for
-            for (int i = 0; i < mMaxiterations; i++)
+            Parallel.For(0, mMaxiterations, i =>
             {
                 lTotal += mHistogram[i];
-            }
-            mProgress.Report(25);
-            for (int x = 0; x < mWidth; ++x)
+            });
+            //mProgress.Report(25);
+            object sync = new Object();
+            Parallel.For(0, mWidth, x =>
             {
                 int p = (int)(25 + 75 * (1.0f * x / mWidth));
-                mProgress.Report(p );
-                //#pragma omp parallel for
-                for (int y = 0; y < mHeight; ++y)
-                {
-                    int iterations = mIterationsVector[y * mWidth + x];
-                    double hue = 0.0;
-
-
-                    if (iterations < mMaxiterations)
+                //mProgress.Report(p );
+                Parallel.For(0, mHeight, y =>
                     {
-//#pragma omp parallel for
-                        for (int i = 0; i < iterations; i++)
+                        int iterations = mIterationsVector[y * mWidth + x];
+                        double hue = 0.0;
+
+
+                        if (iterations < mMaxiterations)
                         {
-                            hue += ((double)mHistogram[i]) / lTotal;
+                        for (int i = 0; i < iterations; i++)
+                            {
+                                hue += ((double)mHistogram[i]) / lTotal;
+                            }
                         }
-                    }
-                    else
-                    {
-                        hue = 0;
-                    }
-                    Color lColor = mColorRangeList.GetColor(iterations);
-                    byte lRed = (byte)(lColor.R * hue);
-                    byte lGreen = (byte)(lColor.G * hue);
-                    byte lBlue = (byte)(lColor.B * hue);
-                    Color lc = Color.FromArgb(lRed, lGreen, lBlue);
-                    mBitmap.SetPixel(x, y, lc);
-                }
-            }
+                        else
+                        {
+                            hue = 0;
+                        }
+                        Color lColor = mColorRangeList.GetColor(iterations);
+                        byte lRed = (byte)(lColor.R * hue);
+                        byte lGreen = (byte)(lColor.G * hue);
+                        byte lBlue = (byte)(lColor.B * hue);
+                        Color lc = Color.FromArgb(lRed, lGreen, lBlue);
+                        lock (sync)
+                        {
+                            mBitmap.SetPixel(x, y, lc);
+                        }
+
+                    });
+            });
         }
         public void addZoom(Zoom inZoom)
         {
