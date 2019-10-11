@@ -6,7 +6,7 @@
 using namespace std;
 using namespace FractalMandelbrot;
 
-
+//***************************************************************************
 BitMap::BitMap(int inWidth, int inHeight) : 
    mWidth(inWidth), 
    mHeight(inHeight),
@@ -14,12 +14,12 @@ BitMap::BitMap(int inWidth, int inHeight) :
 {
 }
 
-
+//***************************************************************************
 BitMap::~BitMap()
 {
 }
 
-
+//***************************************************************************
 bool BitMap::write(const string &inFileName)
 {
    bool lReturnValue = false;
@@ -48,12 +48,10 @@ bool BitMap::write(const string &inFileName)
       lReturnValue = false;
    }
 
-   
-
-
    return lReturnValue;
  }
 
+//***************************************************************************
 void BitMap::setPixel(int inX, int inY, uint8_t inRed, uint8_t inGreen, uint8_t inBlue)
 {
    uint8_t * lPixel = &mPixels[inY * 3 * mWidth + inX * 3];
