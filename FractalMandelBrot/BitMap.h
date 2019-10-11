@@ -1,4 +1,7 @@
-#pragma once
+#ifndef _BITMAP_H_
+#define _BITMAP_H_
+
+
 #include <string>
 #include <vector>
 #include <cstdint>
@@ -16,3 +19,4 @@ public:
    virtual ~BitMap();
 };
 
+#endif //_BITMAP_H_
