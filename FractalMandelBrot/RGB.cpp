@@ -1,25 +1,25 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "RGB.h"
 
 namespace FractalMandelbrot
 {
-   RGB::RGB(double r, double g, double b):r(r), g(g), b(b)
+   FM_RGB::FM_RGB(double r, double g, double b):r(r), g(g), b(b)
    {
    }
 
 
-   RGB::~RGB()
+   FM_RGB::~FM_RGB()
    {
    }
 
-   RGB RGB::operator+(const RGB & inOther)
+   FM_RGB FM_RGB::operator+(const FM_RGB & inOther)
    {
       r += inOther.r;
       g += inOther.g;
       b += inOther.b;
       return *this;
    }
-   RGB RGB::operator-(const RGB & inOther)
+   FM_RGB FM_RGB::operator-(const FM_RGB & inOther)
    {
       r -= inOther.r;
       g -= inOther.g;

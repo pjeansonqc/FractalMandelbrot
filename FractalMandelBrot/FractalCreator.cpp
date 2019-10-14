@@ -1,15 +1,33 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "FractalCreator.h"
+
 
 namespace FractalMandelbrot
 {
-   void FractalCreator::run(std::string name)
+
+   // *******************************************************************************************
+   void FractalCreator::run()
    {
-      calculateIteration();
+      auto lrun = [&]()
+      {
+         calculateIteration();
+         calculateRangeTotals();
+         drawFractal();
+      };
+      std::thread writeThread(lrun);
+      writeThread.join();
+      return;
+
+
+
+
+      /*calculateIteration();
       calculateRangeTotals();
       drawFractal();
-      writeBitmap(name);
+      writeBitmap(name);*/
    }
+
+   // *******************************************************************************************
    FractalCreator::FractalCreator(int inWidth, int inHeight, int inMaxiterations) :
       mWidth(inWidth), 
       mHeight(inHeight),
@@ -18,19 +36,19 @@ namespace FractalMandelbrot
       mIterationsVector(mWidth * mHeight, 0),
       mZoomList(mWidth, mHeight),
       mBitMap(inWidth, inHeight),
-      mColorRangeList(inMaxiterations)
+      mColorRangeList(inMaxiterations),
+      mRangeTotal(0)
    {
       mHistogram.resize(mMaxiterations, 0);
       mZoomList.Add(Zoom(mWidth / 2, mHeight / 2, 4.0 / mWidth));
    }
 
-
+   // *******************************************************************************************
    FractalCreator::~FractalCreator()
    {
    }
 
-
-
+   // *******************************************************************************************
    void FractalCreator::calculateIteration() 
    {
 #pragma omp parallel for
@@ -49,10 +67,11 @@ namespace FractalMandelbrot
          }
       }
    }
+   // *******************************************************************************************
    void FractalCreator::drawFractal() 
    {
       int lTotal = 0;
-//#pragma omp parallel for
+#pragma omp parallel for
       for (int i = 0; i < mMaxiterations; i++)
       {
          lTotal += mHistogram[i];
@@ -60,7 +79,7 @@ namespace FractalMandelbrot
 
       for (int x = 0; x < mWidth; ++x)
       {
-//#pragma omp parallel for
+#pragma omp parallel for
          for (int y = 0; y < mHeight; ++y)
          {
             int iterations = mIterationsVector[y*mWidth + x];
@@ -69,7 +88,7 @@ namespace FractalMandelbrot
 
             if (iterations < mMaxiterations)
             {
-//#pragma omp parallel for
+#pragma omp parallel for
                for (int i = 0; i < iterations; i++)
                {
                   hue += ((double)mHistogram[i]) / lTotal;
@@ -79,7 +98,7 @@ namespace FractalMandelbrot
             {
                hue = 0;
             }
-            RGB lColor =  mColorRangeList.GetColor(iterations);
+            FM_RGB lColor =  mColorRangeList.GetColor(iterations);
             uint8_t lRed = (uint8_t)(lColor.r * hue);
             uint8_t lGreen = (uint8_t)(lColor.g * hue);
             uint8_t lBlue = (uint8_t)(lColor.b * hue);
@@ -87,22 +106,27 @@ namespace FractalMandelbrot
          }
       }
    }
+
+   // *******************************************************************************************
    void FractalCreator::addZoom(const Zoom & inZoom)
    {
       mZoomList.Add(inZoom);
    }
 
-   void FractalCreator::addColorRange(double rangeBegin,  double rangeEnd, const RGB & rgb)
+   // *******************************************************************************************
+   void FractalCreator::addColorRange(double rangeBegin,  double rangeEnd, const FM_RGB & FM_RGB)
    {
-      mColorRangeList.AddColorRange(rangeBegin, rangeEnd, rgb);
+      mColorRangeList.AddColorRange(rangeBegin, rangeEnd, FM_RGB);
    }
 
+   // *******************************************************************************************
    void FractalCreator::writeBitmap(std::string name)
    {
    
       mBitMap.write(name);
    }
 
+   // *******************************************************************************************
    void FractalCreator::calculateRangeTotals()
    {
       /*int rangeIndex = 0;
@@ -123,6 +147,5 @@ namespace FractalMandelbrot
      
    }
 
-
-
+   
 } // namespace FractalMandelbrot

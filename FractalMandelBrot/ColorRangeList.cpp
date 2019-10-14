@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "stdafx.h"
 #include <iostream>
 #include "ColorRangeList.h"
 
@@ -13,15 +13,15 @@ namespace FractalMandelbrot
    ColorRangeList::~ColorRangeList()
    {
    }
-   void ColorRangeList::AddColorRange(double inBegin, double inEnd, const RGB & inColor)
+   void ColorRangeList::AddColorRange(double inBegin, double inEnd, const FM_RGB & inColor)
    {
       int lBegin = inBegin * mMaxIterations;
       int lEnd = inEnd * mMaxIterations;
       mColorRanges.push_back(ColorRange(lBegin, lEnd, inColor) );
    }
-   RGB ColorRangeList::GetColor(int inIterations)
+   FM_RGB ColorRangeList::GetColor(int inIterations)
    {
-      RGB lColor(0, 0, 0);
+      FM_RGB lColor(0, 0, 0);
       bool lFound = false;
       for (auto range : mColorRanges)
       {

@@ -15,8 +15,8 @@ namespace FractalMandelbrot
    public:
       ColorRangeList(int inMaxIterations);
       ~ColorRangeList();
-      void AddColorRange(double inBegin, double inEnd, const RGB & inColor);
-      RGB GetColor(int inIterations);
+      void AddColorRange(double inBegin, double inEnd, const FM_RGB & inColor);
+      FM_RGB GetColor(int inIterations);
 
    };
 

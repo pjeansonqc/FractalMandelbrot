@@ -10,10 +10,10 @@ namespace FractalMandelbrot
    public:
       int mBegin{ 0 };
       int mEnd{ 0 };
-      RGB mColor{ 0, 0, 0 };
+      FM_RGB mColor{ 0, 0, 0 };
 
    public:
-      ColorRange(int inBegin, int inEnd, const RGB & inColor) : 
+      ColorRange(int inBegin, int inEnd, const FM_RGB & inColor) : 
          mBegin(inBegin), 
          mEnd(inEnd), 
          mColor(inColor)  

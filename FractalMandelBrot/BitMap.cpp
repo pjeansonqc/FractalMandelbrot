@@ -1,8 +1,10 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "BitMap.h"
 #include "BitmapInfoHeader.h"
-#include"BitmapFileHeader.h"
+#include "BitmapFileHeader.h"
 #include <fstream>
+#include <thread>
+
 using namespace std;
 using namespace FractalMandelbrot;
 
@@ -20,7 +22,7 @@ BitMap::~BitMap()
 }
 
 //***************************************************************************
-bool BitMap::write(const string &inFileName)
+bool BitMap::writeAsync(const string &inFileName)
 {
    bool lReturnValue = false;
    BitmapFileHeader lFileHeader;
@@ -38,7 +40,8 @@ bool BitMap::write(const string &inFileName)
    {
       lFile.write((char*)&lFileHeader, sizeof(lFileHeader));
       lFile.write((char*)&lInfoHeader, sizeof(lInfoHeader));
-      lFile.write((char*)mPixels.data(), mWidth *  mHeight * 3);
+      long long lSizeToWrite = mWidth * mHeight * 3;
+      lFile.write((char*)mPixels.data(), lSizeToWrite);
       lFile.close();
       lReturnValue = true;
    }
@@ -52,12 +55,24 @@ bool BitMap::write(const string &inFileName)
  }
 
 //***************************************************************************
+bool BitMap::write(const string& inFileName)
+{
+    auto lWrite = [&](const string& rFileName)
+    {
+        writeAsync(rFileName);
+    };
+    std::thread writeThread(lWrite, inFileName);
+    writeThread.join();
+    return true;
+}
+
+//***************************************************************************
 void BitMap::setPixel(int inX, int inY, uint8_t inRed, uint8_t inGreen, uint8_t inBlue)
 {
    uint8_t * lPixel = &mPixels[inY * 3 * mWidth + inX * 3];
 
-   lPixel[0] = inBlue;
+   lPixel[0] = inRed;
    lPixel[1] = inGreen;
-   lPixel[2] = inRed;
+   lPixel[2] = inBlue;
    return;
 }

@@ -12,11 +12,17 @@ private:
    int mWidth{0};
    int mHeight{0};
    vector<uint8_t> mPixels;
-public:
+
+public:  // methods
    BitMap(int inWidth, int inHeight);
    bool write(const string &inFileName);
    void setPixel(int inX, int inY, uint8_t inRed, uint8_t inGreen, uint8_t inBlue);
    virtual ~BitMap();
+   const unsigned char* getData() { return mPixels.data(); }
+   int getLen() { return mPixels.size(); }
+
+private:  // methods
+	bool writeAsync(const string& inFileName);
 };
 
 #endif //_BITMAP_H_

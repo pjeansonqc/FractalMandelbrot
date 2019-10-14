@@ -24,16 +24,16 @@ namespace FractalMandelbrot
       vector<int> mHistogram{ 100, 0 };
       vector<int> mIterationsVector{ mWidth * mHeight, 0 };
       ZoomList mZoomList{ mWidth, mHeight };
-      int mRangeTotal;
+      int mRangeTotal{0};
       bool mGotFirstRange{false};
 
    public:
       FractalCreator(int inWidth, int inHeight, int inMaxiterations);
       virtual ~FractalCreator();
-      void run(std::string name);
+      void run();
       void addZoom(const Zoom & inZoom);
-      void addColorRange(double rangeBegin, double rangeEnd, const RGB & rgb);
-
+      void addColorRange(double rangeBegin, double rangeEnd, const FM_RGB & FM_RGB);
+      BitMap & getBitmap() { return mBitMap; }
    private:
       void calculateIteration();
       void drawFractal();
